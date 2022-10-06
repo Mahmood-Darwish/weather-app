@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDom from 'react-dom';
+window.React = React
 
 import App from './app.js';
 
