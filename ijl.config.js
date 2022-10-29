@@ -5,6 +5,9 @@ module.exports = {
     webpackConfig: {
         output: {
             publicPath: `/static/${pkg.name}/${process.env.VERSION || pkg.version}/`
-        }
+        },
+        devServer: {
+            historyApiFallback: true
+        },
     }
 }
