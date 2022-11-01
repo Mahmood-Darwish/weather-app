@@ -9,6 +9,11 @@ import App from './app.js';
 export default () => <App/>;
 
 export const mount = (Component) => {
+
+    if (module.hot) {
+        module.hot.accept();
+    }
+
     ReactDom.render(
         <BrowserRouter>
             <Component />
