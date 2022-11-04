@@ -3,68 +3,74 @@ import { weatherApiKey } from "../../env";
 import { database } from "../firebase-config";
 import { ref, push, set, get, remove } from "firebase/database";
 import { authContext } from "../auth";
+import { useMutation } from "react-query";
+
+const requestCity = async function (cityToRequest) {
+    const response = await fetch(
+        `https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?q=${cityToRequest}&appid=${weatherApiKey}&units=metric`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+        }
+    );
+    if (!response.ok) {
+        throw new Error("Response is not ok!")
+    }
+    return response.json();
+};
 
 export default function Cities() {
-    const [city, setCity] = useState(null);
     const [cities, setCities] = useState([]);
     const useAuth = useContext(authContext);
+    const [input, setInput] = useState('');
+    const mutation = useMutation(({ cityToRequest }) => requestCity(cityToRequest))
 
     const handleSubmission = async function (e) {
         e.preventDefault();
-        let cityToAdd = city.toLowerCase()
+        let cityToAdd = input.toLowerCase()
         cityToAdd = cityToAdd.replace(/\s/g, '')
-        setCity(null)
+        setInput(null)
 
-        try {
-            const response = await fetch(
-                `https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?q=${cityToAdd}&appid=${weatherApiKey}&units=metric`,
-                {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-            if (response.status != 200) {
-                console.log(response.json());
-                console.log(useAuth.user.uid);
-                return
-            }
-        } catch (error) {
-            console.error(error);
-            return;
-        }
-
-        let cityExists = false
-        const citiesListRef = ref(database, "cities/" + useAuth.user.uid);
-        await get(citiesListRef).then(
-            (snapshot) => {
-                const process = async (data) => {
-                    for (const id_tag in data) {
-                        for (const cityName in data[id_tag]) {
-                            if (data[id_tag][cityName].toLowerCase().replace(/\s/g, '') == cityToAdd) {
-                                cityExists = true
-                                break
+        mutation.mutate({ cityToRequest: cityToAdd }, {
+            onSuccess: async (data) => {
+                let cityExists = false
+                const citiesListRef = ref(database, "cities/" + useAuth.user.uid);
+                await get(citiesListRef).then(
+                    (snapshot) => {
+                        const process = async (data) => {
+                            for (const id_tag in data) {
+                                for (const cityName in data[id_tag]) {
+                                    if (data[id_tag][cityName].toLowerCase().replace(/\s/g, '') == cityToAdd) {
+                                        cityExists = true
+                                        break
+                                    }
+                                }
                             }
                         }
+                        process(snapshot.val());
+                    },
+                    function (error) {
+                        console.error(error);
                     }
+                )
+
+                if (cityExists == false) {
+                    const newCityRef = push(citiesListRef);
+                    set(newCityRef, {
+                        cityToAdd,
+                    });
+                    let newCities = [...cities, [data, newCityRef.key]];
+                    console.log(newCities)
+                    setCities(newCities)
                 }
-                process(snapshot.val());
+                else {
+                    console.log(cityToAdd + " already exists")
+                }
             },
-            function (error) {
-                console.error(error);
-            }
-        )
-        if (cityExists == false) {
-            const newCityRef = push(citiesListRef);
-            set(newCityRef, {
-                cityToAdd,
-            });
-            let response = await requestCity(cityToAdd)
-            let newCities = [...cities, [response, newCityRef.key]];
-            setCities(newCities)
-        }
-        else {
-            console.log(cityToAdd + " already exists")
-        }
+            onError: (error) => {
+                console.log(error)
+            },
+        })
     }
 
     const setUp = async function () {
@@ -75,25 +81,25 @@ export default function Cities() {
                 const process = async (data) => {
                     for (const id_tag in data) {
                         for (const city in data[id_tag]) {
-                            console.log(data[id_tag][city]);
                             newCities.push([data[id_tag][city], id_tag]);
                         }
                     }
-                    const citiesPromises = newCities.map(async ([city, tag]) => {
-                        const cityResponse = await requestCity(city);
-                        return [cityResponse, tag];
+                    let cityPromises = newCities.map(async ([city, tag]) => {
+                        const cityResponse = mutation.mutateAsync({ cityToRequest: city })
+                        return ([cityResponse, tag]);
                     });
-                    const citiesFormatted = await Promise.allSettled(citiesPromises)
-                    for (let i = 0; i < citiesFormatted.length; i++) {
-                        if (citiesFormatted[i].status == "fulfilled") {
-                            citiesFormatted[i] = [citiesFormatted[i].value[0], citiesFormatted[i].value[1]]
-                        }
-                        else {
-                            citiesFormatted[i] = ["error", citiesFormatted[i].value[1]]
-                        }
+                    cityPromises = await Promise.allSettled(cityPromises)
+                    cityPromises = cityPromises.map(cityPromise => { return cityPromise.value; });
+                    const cityTags = cityPromises.map(([city, tag]) => { return tag; });
+                    cityPromises = cityPromises.map(([city, tag]) => { return city; });
+                    cityPromises = await Promise.allSettled(cityPromises)
+                    cityPromises = cityPromises.map(cityPromise => { return cityPromise.value; });
+                    let resultCities = []
+                    for (let i = 0; i < cityPromises.length; i++) {
+                        resultCities.push([cityPromises[i], cityTags[i]])
                     }
-                    console.log("citiesFormatted", citiesFormatted);
-                    setCities(citiesFormatted);
+                    console.log("resultCities", resultCities);
+                    setCities(resultCities);
                 };
                 process(snapshot.val());
             },
@@ -107,21 +113,6 @@ export default function Cities() {
         setUp();
     }, []);
 
-    const requestCity = async function (cityToRequest) {
-        console.log("cityToRequest", cityToRequest);
-        let jsonResponse;
-        const response = await fetch(
-            `https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/weather?q=${cityToRequest}&appid=${weatherApiKey}&units=metric`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-            }
-        );
-        jsonResponse = await response.json();
-        console.log(jsonResponse);
-        console.log(useAuth.user.uid);
-        return jsonResponse;
-    };
 
     const handleDeletion = async function (idToDelete) {
         const refToBeDeleted = ref(database, "cities/" + useAuth.user.uid + "/" + idToDelete);
@@ -142,12 +133,12 @@ export default function Cities() {
 
     return (
         <div>
-            <form onSubmit={handleSubmission}>
+            <form onSubmit={(e) => handleSubmission(e)}>
                 <label>
                     <p>Add city to monitor: </p>
                     <input
-                        onChange={(e) => setCity(e.target.value)}
-                        value={city == null ? "" : city}
+                        onChange={(e) => setInput(e.target.value)}
+                        value={input == null ? "" : input}
                     />
                 </label>
                 <div>
