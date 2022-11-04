@@ -4,6 +4,7 @@ import { database } from "../firebase-config";
 import { ref, push, set, get, remove } from "firebase/database";
 import { authContext } from "../auth";
 import { useMutation } from "react-query";
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Label } from 'recharts';
 
 const requestCity = async function (cityToRequest) {
     const response = await fetch(
@@ -156,6 +157,41 @@ export default function Cities() {
                         );
                     })
                 }
+            </div>
+            <div>
+                <p fill="black" textAnchor="middle" dominantBaseline="central" fontSize={14}>
+                    Tempreatures accross latitude
+                </p>
+                <LineChart width={700} height={400} data={
+                    [
+                        {
+                            name: 'Page A',
+                            uv: -30
+                        },
+                        {
+                            name: 'Page B',
+                            uv: 10
+                        },
+                        {
+                            name: 'Page C',
+                            uv: 0
+                        },
+                        {
+                            name: 'Page D',
+                            uv: -5
+                        },
+                    ]
+                } margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                    <Line type="monotone" dataKey="uv" stroke="#8884d8" />
+                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                    <XAxis dataKey="name">
+                        <Label value="Latitude" dy={+20} />
+                    </XAxis>
+                    <YAxis>
+                        <Label value="Temp" dx={-20} />
+                    </YAxis>
+                    <Tooltip />
+                </LineChart>
             </div>
         </div>
     );
