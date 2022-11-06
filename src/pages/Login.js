@@ -1,39 +1,65 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { authContext } from "../auth"
+import { authContext } from "../auth";
 
 function Login() {
-    const [details, setDetails] = useState({ email: "", password: "" })
+  const [details, setDetails] = useState({ email: "", password: "" });
 
-    const useAuth = useContext(authContext);
+  const useAuth = useContext(authContext);
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const handleSubmission = function (e) {
-        e.preventDefault();
-        const response = useAuth.login(details.email, details.password)
-        if (response != null) {
-            useAuth.setUser(details.email)
-            navigate("/weather_app")
-        }
+  const handleSubmission = function (e) {
+    e.preventDefault();
+    const response = useAuth.login(details.email, details.password);
+    if (response != null) {
+      useAuth.setUser(details.email);
+      navigate("/weather_app");
     }
+  };
 
-    return (
+  return (
+    <div className="wrapper fadeInDown">
+      <section id="formContent">
+        <h2 className="active"> Sign In </h2>
+
         <form onSubmit={handleSubmission}>
-            <label>
-                <p>Email</p>
-                <input type="email" onChange={(e) => setDetails({ ...details, email: e.target.value })} value={details.email} />
-            </label>
-            <label>
-                <p>Password</p>
-                <input type="password" onChange={(e) => setDetails({ ...details, password: e.target.value })} value={details.password} />
-            </label>
-            <div>
-                <button type="submit">Submit</button>
-            </div>
-            <button className="link-btn" onClick={() => navigate("/register")}>Don't have an account? Register here.</button>
+          <input
+            type="email"
+            id="login"
+            className="fadeIn second"
+            placeholder="login"
+            value={details.email}
+            onChange={(e) =>
+              setDetails({ ...details, email: e.target.value })
+            }
+          />
+
+          <input
+            type="password"
+            id="password"
+            className="fadeIn third"
+            placeholder="password"
+            value={details.password}
+            onChange={(e) =>
+              setDetails({ ...details, password: e.target.value })
+            }
+          />
+
+          <button type="submit" className="fadeIn fourth"> Log in </button>
+
         </form>
-    )
+
+        <footer id="formFooter">
+          <button className="fadeIn fourth" onClick={() => navigate("/register")}>
+            Don't have an account? Register here.
+          </button>
+        </footer>
+
+      </section>
+
+    </div>
+  );
 }
 
 export default Login;

@@ -138,12 +138,14 @@ export default function Cities() {
                 <label>
                     <p>Add city to monitor: </p>
                     <input
+                        id="city-add"
+                        type="text" 
                         onChange={(e) => setInput(e.target.value)}
                         value={input == null ? "" : input}
                     />
                 </label>
                 <div>
-                    <button type="submit">Submit</button>
+                    <button type="submit" className="fourth">Submit</button>
                 </div>
             </form>
             <div>
@@ -158,7 +160,7 @@ export default function Cities() {
                     })
                 }
             </div>
-            <div>
+            <div className="flex-column">
                 <p fill="black" textAnchor="middle" dominantBaseline="central" fontSize={14}>
                     Tempreatures accross latitude
                 </p>
