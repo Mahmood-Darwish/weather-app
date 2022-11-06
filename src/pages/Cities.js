@@ -133,7 +133,7 @@ export default function Cities() {
     }
 
     return (
-        <div>
+        <div style={{ display: "inline-block" }}>
             <form onSubmit={(e) => handleSubmission(e)}>
                 <label>
                     <p>Add city to monitor: </p>
@@ -144,26 +144,24 @@ export default function Cities() {
                         value={input == null ? "" : input}
                     />
                 </label>
-                <div>
-                    <button type="submit" className="fourth">Submit</button>
-                </div>
+                <button type="submit" className="fourth">Submit</button>
             </form>
-            <div>
+            <section>
                 {
                     cities.map((city) => {
                         return (
-                            <div key={city[1]}>
+                            <article key={city[1]}>
                                 {city[0].name + " " + city[1]}
                                 <button type="submit" onClick={() => handleDeletion(city[1])}> Delete </button>
-                            </div>
+                            </article>
                         );
                     })
                 }
-            </div>
-            <div className="flex-column">
-                <p fill="black" textAnchor="middle" dominantBaseline="central" fontSize={14}>
+            </section>
+            <figure className="flex-column">
+                <figcaption fill="black" textAnchor="middle" dominantBaseline="central" fontSize={14}>
                     Tempreatures accross latitude
-                </p>
+                </figcaption>
                 <LineChart width={700} height={400} data={
                     [
                         {
@@ -194,7 +192,7 @@ export default function Cities() {
                     </YAxis>
                     <Tooltip />
                 </LineChart>
-            </div>
+            </figure>
         </div>
     );
 }
