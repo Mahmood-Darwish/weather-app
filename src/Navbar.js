@@ -27,7 +27,7 @@ export default function Navbar() {
                 {
                     useAuth.user &&
                     (
-                        <button onClick={() => { useAuth.logout() }}> Log out </button>
+                        <button tabIndex={0} onClick={() => { useAuth.logout() }}> Log out </button>
                     )
                 }
 
@@ -42,7 +42,7 @@ function CustomLink({ to, children, ...props }) {
 
     return (
         <li className={isActive ? "active" : ""}>
-            <Link to={to} {...props}>
+            <Link tabIndex={0} to={to} {...props}>
                 {children}
             </Link>
         </li>

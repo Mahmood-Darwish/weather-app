@@ -33,6 +33,7 @@ function Register() {
 
         <form onSubmit={handleSubmission}>
           <input
+            tabIndex={0}
             type="email"
             id="login"
             className="fadeIn second"
@@ -44,6 +45,7 @@ function Register() {
           />
 
           <input
+            tabIndex={0}
             type="password"
             id="password"
             className="fadeIn third"
@@ -55,6 +57,7 @@ function Register() {
           />
 
           <input
+            tabIndex={0}
             type="password"
             id="password"
             className="fadeIn third"
@@ -65,12 +68,12 @@ function Register() {
             }
           />
 
-          <button type="submit" className="fadeIn fourth"> Register </button>
+          <button tabIndex={0} type="submit" className="fadeIn fourth"> Register </button>
 
         </form>
 
         <footer id="formFooter">
-          <button className="fadeIn fourth" onClick={() => navigate("/login")}>
+          <button tabIndex={0} className="fadeIn fourth" onClick={() => navigate("/login")}>
             Already have an account? Log in.
           </button>
         </footer>

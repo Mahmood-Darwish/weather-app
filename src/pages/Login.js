@@ -25,6 +25,7 @@ function Login() {
 
         <form onSubmit={handleSubmission}>
           <input
+            tabIndex={0}
             type="email"
             id="login"
             className="fadeIn second"
@@ -36,6 +37,7 @@ function Login() {
           />
 
           <input
+            tabIndex={0}
             type="password"
             id="password"
             className="fadeIn third"
@@ -46,12 +48,12 @@ function Login() {
             }
           />
 
-          <button type="submit" className="fadeIn fourth"> Log in </button>
+          <button tabIndex={0} type="submit" className="fadeIn fourth"> Log in </button>
 
         </form>
 
         <footer id="formFooter">
-          <button className="fadeIn fourth" onClick={() => navigate("/register")}>
+          <button tabIndex={0} className="fadeIn fourth" onClick={() => navigate("/register")}>
             Don't have an account? Register here.
           </button>
         </footer>

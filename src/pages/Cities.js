@@ -152,9 +152,9 @@ export default function Cities() {
                         value={input == null ? "" : input}
                     />
                 </label>
-                <button type="submit" className="fourth">Submit</button>
+                <button tabIndex={0} type="submit" className="fourth">Submit</button>
             </form>
-            <section style={{ "display": "grid", "grid-template-columns": "200px 200px 200px 200px 200px" }}>
+            <section style={{ "display": "grid", "gridTemplateColumns": "200px 200px 200px 200px 200px" }}>
                 {
                     cities.map((city) => {
                         return (
@@ -167,7 +167,7 @@ export default function Cities() {
                                 <li>Humidity: {city[0].main.humidity}%</li>
                                 <li>Wind speed: {city[0].wind.speed}m/s</li>
                                 <li>Wind degree: {city[0].wind.deg}°</li>
-                                <button style={{ marginTop: "10px" }} type="submit" onClick={() => handleDeletion(city[1])}> Delete </button>
+                                <button tabIndex={0} style={{ marginTop: "10px" }} type="submit" onClick={() => handleDeletion(city[1])}> Delete </button>
                             </menu>
                         );
                     })
@@ -177,7 +177,7 @@ export default function Cities() {
                 <figcaption fill="black" textAnchor="middle" dominantBaseline="central" fontSize={14}>
                     Tempreatures accross latitude
                 </figcaption>
-                <LineChart width={700} height={400} data={
+                <LineChart alt={"Figure showing the temperatures accross latitude"} width={700} height={400} data={
                     [
                         {
                             name: 'Page A',

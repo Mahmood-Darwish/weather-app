@@ -111,6 +111,13 @@ body {
 .nav li:hover {
     background-color: #777;
 }
+.nav a:focus-visible {
+  border: 1px solid red;
+}
+
+button:focus-visible {
+  border: 1px solid red;
+}
 .flex-row {
   display: flex;
   flex-direction: row;
@@ -246,6 +253,10 @@ input[type=reset],
   color: #0d0d0d;
 }
 
+.fadeIn.fourth:focus {
+  background-color: white;
+  color: #0d0d0d;
+}
 input[type=button]:active,
 input[type=submit]:active,
 input[type=reset]:active,
