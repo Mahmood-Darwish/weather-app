@@ -26,6 +26,14 @@ export default function Cities() {
     const [input, setInput] = useState('');
     const mutation = useMutation(({ cityToRequest }) => requestCity(cityToRequest))
 
+    const capitalize = (str) => {
+        var splitStr = str.toLowerCase().split(' ');
+        for (var i = 0; i < splitStr.length; i++) {
+            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+        }
+        return splitStr.join(' ');
+    }
+
     const handleSubmission = async function (e) {
         e.preventDefault();
         let cityToAdd = input.toLowerCase()
@@ -146,14 +154,21 @@ export default function Cities() {
                 </label>
                 <button type="submit" className="fourth">Submit</button>
             </form>
-            <section>
+            <section style={{ "display": "grid", "grid-template-columns": "200px 200px 200px 200px 200px" }}>
                 {
                     cities.map((city) => {
                         return (
-                            <article key={city[1]}>
-                                {city[0].name + " " + city[1]}
-                                <button type="submit" onClick={() => handleDeletion(city[1])}> Delete </button>
-                            </article>
+                            <menu className="card">
+                                <h3 style={{ margin: 0, padding: 0 }} >{city[0].name}</h3>
+                                <h4 style={{ margin: "10px", padding: 0 }}>{capitalize(city[0].weather[0].description)}</h4>
+                                <li>Feels like: {city[0].main.feels_like}°C</li>
+                                <li>Temp max: {city[0].main.temp_max}°C</li>
+                                <li>Temp min: {city[0].main.temp_min}°C</li>
+                                <li>Humidity: {city[0].main.humidity}%</li>
+                                <li>Wind speed: {city[0].wind.speed}m/s</li>
+                                <li>Wind degree: {city[0].wind.deg}°</li>
+                                <button style={{ marginTop: "10px" }} type="submit" onClick={() => handleDeletion(city[1])}> Delete </button>
+                            </menu>
                         );
                     })
                 }

@@ -28,7 +28,7 @@ function Login() {
             type="email"
             id="login"
             className="fadeIn second"
-            placeholder="login"
+            placeholder="E-mail"
             value={details.email}
             onChange={(e) =>
               setDetails({ ...details, email: e.target.value })
@@ -39,7 +39,7 @@ function Login() {
             type="password"
             id="password"
             className="fadeIn third"
-            placeholder="password"
+            placeholder="Password"
             value={details.password}
             onChange={(e) =>
               setDetails({ ...details, password: e.target.value })
