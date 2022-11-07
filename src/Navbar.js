@@ -11,17 +11,17 @@ export default function Navbar() {
                 Weather App
             </Link>
             <ul>
-                <CustomLink to="/about">About</CustomLink>
+                <CustomLink to="/weather_app/about">About</CustomLink>
                 {
                     !useAuth.user &&
                     (
-                        <CustomLink to="/login">Login</CustomLink>
+                        <CustomLink to="/weather_app/login">Login</CustomLink>
                     )
                 }
                 {
                     useAuth.user &&
                     (
-                        (<CustomLink to="/cities">My Cities</CustomLink>)
+                        (<CustomLink to="/weather_app/cities">My Cities</CustomLink>)
                     )
                 }
                 {

@@ -20,12 +20,12 @@ function App() {
                 <main className="container" style={{ padding: 0, margin: 0, backgroundImage: `url(${background})`, height: "auto", minHeight: "100vh" }} >
                     <Routes>
                         <Route element={<PrivateRoutes />}>
-                            <Route path="/cities" element={<Cities />} />
+                            <Route path="/weather_app/cities" element={<Cities />} />
                         </Route>
                         <Route path="/weather_app" element={<Home />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
+                        <Route path="/weather_app/about" element={<About />} />
+                        <Route path="/weather_app/login" element={<Login />} />
+                        <Route path="/weather_app/register" element={<Register />} />
                     </Routes>
                 </main>
             </AuthProvider>

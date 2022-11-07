@@ -5,7 +5,7 @@ import { useContext } from "react";
 const PrivateRoutes = () => {
     const useAuth = useContext(authContext);
     return (
-        useAuth.user ? <Outlet /> : <Navigate to="/login" />
+        useAuth.user.uid ? <Outlet /> : <Navigate to="/weather_app/login" />
     )
 }
 

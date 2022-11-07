@@ -53,7 +53,7 @@ function Login() {
         </form>
 
         <footer id="formFooter">
-          <button tabIndex={0} className="fadeIn fourth" onClick={() => navigate("/register")}>
+          <button tabIndex={0} className="fadeIn fourth" onClick={() => navigate("/weather_app/register")}>
             Don't have an account? Register here.
           </button>
         </footer>
