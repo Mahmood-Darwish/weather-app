@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { apiKey } from "../env";
+import { apiKey } from "../../env";
 import "firebase/database";
 import firebase from 'firebase/compat/app';
 import { getDatabase } from "firebase/database";

@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from "react";
 import { weatherApiKey } from "../../env";
-import { database } from "../firebase-config";
+import { database } from "../utils/firebase-config";
 import { ref, push, set, get, remove } from "firebase/database";
-import { authContext } from "../auth";
+import { authContext } from "../utils/auth";
 import { useMutation } from "react-query";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Label } from 'recharts';
 import { toast } from 'react-toastify';

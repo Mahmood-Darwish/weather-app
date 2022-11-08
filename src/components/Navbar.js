@@ -1,5 +1,5 @@
 import { Link, useMatch, useResolvedPath } from "react-router-dom"
-import { authContext } from "./auth"
+import { authContext } from "../utils/auth"
 import { useContext } from "react";
 
 
