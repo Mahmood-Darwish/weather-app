@@ -16,7 +16,7 @@ const requestCity = async function (cityToRequest) {
         }
     );
     if (!response.ok) {
-        toast("Unexpected error when adding the city! Check for spelling mistakes.")
+        toast("Unexpected error when adding the city! Maybe the city doesn't exist in the database or there are spelling mistakes.")
         throw new Error("Response is not ok!")
     }
     return response.json();
@@ -27,6 +27,30 @@ export default function Cities() {
     const useAuth = useContext(authContext);
     const [input, setInput] = useState('');
     const mutation = useMutation(({ cityToRequest }) => requestCity(cityToRequest))
+
+    const getData = () => {
+        let res = []
+        for (let i = 0; i < cities.length; i++) {
+            res.push(
+                {
+                    x: `${cities[i][0].name}, ${cities[i][0].coord.lat}`,
+                    y: cities[i][0].main.temp
+                }
+            )
+        }
+        res = res.sort((a, b) => {
+            let a_lat = a.x.split(",")
+            const a_lat_float = parseFloat(a_lat[1])
+            let b_lat = b.x.split(",")
+            const b_lat_float = parseFloat(b_lat[1])
+            if (a_lat_float > b_lat_float)
+                return -1;
+            if (a_lat_float < b_lat_float)
+                return 1;
+            return 0;
+        })
+        return res
+    }
 
     const capitalize = (str) => {
         var splitStr = str.toLowerCase().split(' ');
@@ -40,7 +64,6 @@ export default function Cities() {
         try {
             e.preventDefault();
             let cityToAdd = input.toLowerCase()
-            cityToAdd = cityToAdd.replace(/\s/g, '')
             setInput(null)
 
             mutation.mutate({ cityToRequest: cityToAdd }, {
@@ -185,41 +208,28 @@ export default function Cities() {
                     })
                 }
             </section>
-            <figure className="flex-column">
-                <figcaption fill="black" textAnchor="middle" dominantBaseline="central" fontSize={14}>
-                    Tempreatures accross latitude
-                </figcaption>
-                <LineChart alt={"Figure showing the temperatures accross latitude"} width={700} height={400} data={
-                    [
-                        {
-                            name: 'Page A',
-                            uv: -30
-                        },
-                        {
-                            name: 'Page B',
-                            uv: 10
-                        },
-                        {
-                            name: 'Page C',
-                            uv: 0
-                        },
-                        {
-                            name: 'Page D',
-                            uv: -5
-                        },
-                    ]
-                } margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                    <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-                    <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-                    <XAxis dataKey="name">
-                        <Label value="Latitude" dy={+20} />
-                    </XAxis>
-                    <YAxis>
-                        <Label value="Temp" dx={-20} />
-                    </YAxis>
-                    <Tooltip />
-                </LineChart>
-            </figure>
+            {
+                cities.length != 0 &&
+                (
+                    <figure className="flex-column">
+                        <figcaption fill="black" textAnchor="middle" dominantBaseline="central" fontSize={14}>
+                            Tempreatures accross latitude
+                        </figcaption>
+                        <LineChart alt={"Figure showing the temperatures accross latitude"} width={700} height={400} data={getData()}
+                            margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                            <Line type="monotone" dataKey="y" stroke="#8884d8" />
+                            <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+                            <XAxis dataKey="x">
+                                <Label value="Latitude" dy={+20} />
+                            </XAxis>
+                            <YAxis>
+                                <Label value="Temp" dx={-20} />
+                            </YAxis>
+                            <Tooltip />
+                        </LineChart>
+                    </figure>
+                )
+            } 
         </div>
     );
 }
