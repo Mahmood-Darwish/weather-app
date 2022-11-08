@@ -5,6 +5,7 @@ import { ref, push, set, get, remove } from "firebase/database";
 import { authContext } from "../auth";
 import { useMutation } from "react-query";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Label } from 'recharts';
+import { toast } from 'react-toastify';
 
 const requestCity = async function (cityToRequest) {
     const response = await fetch(
@@ -15,6 +16,7 @@ const requestCity = async function (cityToRequest) {
         }
     );
     if (!response.ok) {
+        toast("Unexpected error when adding the city! Check for spelling mistakes.")
         throw new Error("Response is not ok!")
     }
     return response.json();
@@ -35,87 +37,97 @@ export default function Cities() {
     }
 
     const handleSubmission = async function (e) {
-        e.preventDefault();
-        let cityToAdd = input.toLowerCase()
-        cityToAdd = cityToAdd.replace(/\s/g, '')
-        setInput(null)
+        try {
+            e.preventDefault();
+            let cityToAdd = input.toLowerCase()
+            cityToAdd = cityToAdd.replace(/\s/g, '')
+            setInput(null)
 
-        mutation.mutate({ cityToRequest: cityToAdd }, {
-            onSuccess: async (data) => {
-                let cityExists = false
-                const citiesListRef = ref(database, "cities/" + useAuth.user.uid);
-                await get(citiesListRef).then(
-                    (snapshot) => {
-                        const process = async (data) => {
-                            for (const id_tag in data) {
-                                for (const cityName in data[id_tag]) {
-                                    if (data[id_tag][cityName].toLowerCase().replace(/\s/g, '') == cityToAdd) {
-                                        cityExists = true
-                                        break
+            mutation.mutate({ cityToRequest: cityToAdd }, {
+                onSuccess: async (data) => {
+                    let cityExists = false
+                    const citiesListRef = ref(database, "cities/" + useAuth.user.uid);
+                    await get(citiesListRef).then(
+                        (snapshot) => {
+                            const process = async (data) => {
+                                for (const id_tag in data) {
+                                    for (const cityName in data[id_tag]) {
+                                        if (data[id_tag][cityName].toLowerCase().replace(/\s/g, '') == cityToAdd) {
+                                            cityExists = true
+                                            break
+                                        }
                                     }
                                 }
                             }
+                            process(snapshot.val());
+                        },
+                        function (error) {
+                            toast(error);
                         }
-                        process(snapshot.val());
-                    },
-                    function (error) {
-                        console.error(error);
-                    }
-                )
+                    )
 
-                if (cityExists == false) {
-                    const newCityRef = push(citiesListRef);
-                    set(newCityRef, {
-                        cityToAdd,
-                    });
-                    let newCities = [...cities, [data, newCityRef.key]];
-                    console.log(newCities)
-                    setCities(newCities)
-                }
-                else {
-                    console.log(cityToAdd + " already exists")
-                }
-            },
-            onError: (error) => {
-                console.log(error)
-            },
-        })
+                    if (cityExists == false) {
+                        const newCityRef = push(citiesListRef);
+                        set(newCityRef, {
+                            cityToAdd,
+                        });
+                        let newCities = [...cities, [data, newCityRef.key]];
+                        console.log(newCities)
+                        setCities(newCities)
+                    }
+                    else {
+                        toast(cityToAdd + " already exists!")
+                    }
+                },
+                onError: (error) => {
+                    toast(error)
+                },
+            })
+        }
+        catch (error) {
+            toast(error)
+        }
     }
 
     const setUp = async function () {
-        const citiesListRef = ref(database, "cities/" + useAuth.user.uid);
-        let newCities = [];
-        get(citiesListRef).then(
-            (snapshot) => {
-                const process = async (data) => {
-                    for (const id_tag in data) {
-                        for (const city in data[id_tag]) {
-                            newCities.push([data[id_tag][city], id_tag]);
+        try {
+            const citiesListRef = ref(database, "cities/" + useAuth.user.uid);
+            let newCities = [];
+            get(citiesListRef).then(
+                (snapshot) => {
+                    const process = async (data) => {
+                        for (const id_tag in data) {
+                            for (const city in data[id_tag]) {
+                                newCities.push([data[id_tag][city], id_tag]);
+                            }
                         }
-                    }
-                    let cityPromises = newCities.map(async ([city, tag]) => {
-                        const cityResponse = mutation.mutateAsync({ cityToRequest: city })
-                        return ([cityResponse, tag]);
-                    });
-                    cityPromises = await Promise.allSettled(cityPromises)
-                    cityPromises = cityPromises.map(cityPromise => { return cityPromise.value; });
-                    const cityTags = cityPromises.map(([city, tag]) => { return tag; });
-                    cityPromises = cityPromises.map(([city, tag]) => { return city; });
-                    cityPromises = await Promise.allSettled(cityPromises)
-                    cityPromises = cityPromises.map(cityPromise => { return cityPromise.value; });
-                    let resultCities = []
-                    for (let i = 0; i < cityPromises.length; i++) {
-                        resultCities.push([cityPromises[i], cityTags[i]])
-                    }
-                    console.log("resultCities", resultCities);
-                    setCities(resultCities);
-                };
-                process(snapshot.val());
-            },
-            function (error) {
-                console.error(error);
-            }
-        );
+                        let cityPromises = newCities.map(async ([city, tag]) => {
+                            const cityResponse = mutation.mutateAsync({ cityToRequest: city })
+                            return ([cityResponse, tag]);
+                        });
+                        cityPromises = await Promise.allSettled(cityPromises)
+                        cityPromises = cityPromises.map(cityPromise => { return cityPromise.value; });
+                        const cityTags = cityPromises.map(([city, tag]) => { return tag; });
+                        cityPromises = cityPromises.map(([city, tag]) => { return city; });
+                        cityPromises = await Promise.allSettled(cityPromises)
+                        cityPromises = cityPromises.map(cityPromise => { return cityPromise.value; });
+                        let resultCities = []
+                        for (let i = 0; i < cityPromises.length; i++) {
+                            resultCities.push([cityPromises[i], cityTags[i]])
+                        }
+                        console.log("resultCities", resultCities);
+                        setCities(resultCities);
+                    };
+                    process(snapshot.val());
+                },
+                function (error) {
+                    console.error(error);
+                }
+            );
+        }
+        catch (error) {
+            toast(error)
+        }
     };
 
     useEffect(() => {
@@ -124,8 +136,8 @@ export default function Cities() {
 
 
     const handleDeletion = async function (idToDelete) {
-        const refToBeDeleted = ref(database, "cities/" + useAuth.user.uid + "/" + idToDelete);
         try {
+            const refToBeDeleted = ref(database, "cities/" + useAuth.user.uid + "/" + idToDelete);
             remove(refToBeDeleted)
             for (let i = 0; i < cities.length; i++) {
                 if (cities[i][1] == idToDelete) {
@@ -136,7 +148,7 @@ export default function Cities() {
             }
         }
         catch (error) {
-            console.log(error)
+            toast(error)
         }
     }
 

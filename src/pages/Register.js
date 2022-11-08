@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { authContext } from "../auth";
+import { toast } from 'react-toastify';
 
 function Register() {
   const [details, setDetails] = useState({
@@ -13,15 +14,16 @@ function Register() {
 
   const navigate = useNavigate();
 
-  const handleSubmission = function (e) {
+  const handleSubmission = async (e) => {
     e.preventDefault();
-    if (details.password != details.confirmation) {
-      alert("Passwords do not match!");
+    if (details.password !== details.confirmation) {
+      toast("Passwords do not match!");
       return;
     }
     const response = useAuth.register(details.email, details.password);
-    if (response != null) {
-      useAuth.setUser(details.email);
+    const resolvedResponse = await Promise.resolve(response)
+    if (resolvedResponse != null) {
+      useAuth.setUser(resolvedResponse.user.uid);
       navigate("/weather_app");
     }
   };

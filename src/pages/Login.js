@@ -9,11 +9,13 @@ function Login() {
 
   const navigate = useNavigate();
 
-  const handleSubmission = function (e) {
+  const handleSubmission = async (e) => {
     e.preventDefault();
     const response = useAuth.login(details.email, details.password);
-    if (response != null) {
-      useAuth.setUser(details.email);
+    const resolvedResponse = await Promise.resolve(response)
+    if (resolvedResponse != null) {
+      await useAuth.setUser(resolvedResponse.user.uid);
+      console.log(useAuth.user)
       navigate("/weather_app");
     }
   };

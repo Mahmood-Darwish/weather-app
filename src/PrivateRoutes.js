@@ -2,10 +2,13 @@ import { Outlet, Navigate } from 'react-router-dom'
 import { authContext } from "./auth"
 import { useContext } from "react";
 
-const PrivateRoutes = () => {
+const PrivateRoutes = ({ shouldBeLoggedIn }) => {
     const useAuth = useContext(authContext);
+
+    console.log(shouldBeLoggedIn, useAuth.user)
+
     return (
-        useAuth.user.uid ? <Outlet /> : <Navigate to="/weather_app/login" />
+        (useAuth.user !== null) === (shouldBeLoggedIn !== null) ? <Outlet /> : <Navigate to="/weather_app" />
     )
 }
 
