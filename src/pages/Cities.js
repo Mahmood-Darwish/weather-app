@@ -75,7 +75,7 @@ export default function Cities() {
                             const process = async (data) => {
                                 for (const id_tag in data) {
                                     for (const cityName in data[id_tag]) {
-                                        if (data[id_tag][cityName].toLowerCase().replace(/\s/g, '') == cityToAdd) {
+                                        if (data[id_tag][cityName].toLowerCase() === cityToAdd) {
                                             cityExists = true
                                             break
                                         }
@@ -89,13 +89,12 @@ export default function Cities() {
                         }
                     )
 
-                    if (cityExists == false) {
+                    if (cityExists === false) {
                         const newCityRef = push(citiesListRef);
                         set(newCityRef, {
                             cityToAdd,
                         });
                         let newCities = [...cities, [data, newCityRef.key]];
-                        console.log(newCities)
                         setCities(newCities)
                     }
                     else {
@@ -138,7 +137,6 @@ export default function Cities() {
                         for (let i = 0; i < cityPromises.length; i++) {
                             resultCities.push([cityPromises[i], cityTags[i]])
                         }
-                        console.log("resultCities", resultCities);
                         setCities(resultCities);
                     };
                     process(snapshot.val());
@@ -163,7 +161,7 @@ export default function Cities() {
             const refToBeDeleted = ref(database, "cities/" + useAuth.user.uid + "/" + idToDelete);
             remove(refToBeDeleted)
             for (let i = 0; i < cities.length; i++) {
-                if (cities[i][1] == idToDelete) {
+                if (cities[i][1] === idToDelete) {
                     const newCities = cities.filter(([_, id]) => id != idToDelete);
                     setCities(newCities)
                     break
@@ -184,7 +182,7 @@ export default function Cities() {
                         id="city-add"
                         type="text" 
                         onChange={(e) => setInput(e.target.value)}
-                        value={input == null ? "" : input}
+                        value={input === null ? "" : input}
                     />
                 </label>
                 <button tabIndex={0} type="submit" className="fourth">Submit</button>

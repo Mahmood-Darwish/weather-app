@@ -15,7 +15,6 @@ function Login() {
     const resolvedResponse = await Promise.resolve(response)
     if (resolvedResponse != null) {
       await useAuth.setUser(resolvedResponse.user.uid);
-      console.log(useAuth.user)
       navigate("/weather_app");
     }
   };
