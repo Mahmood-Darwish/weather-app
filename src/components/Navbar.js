@@ -13,19 +13,19 @@ export default function Navbar() {
             <ul>
                 <CustomLink to="/weather_app/about">About</CustomLink>
                 {
-                    !useAuth.user &&
+                    !useAuth?.user &&
                     (
                         <CustomLink to="/weather_app/login">Login</CustomLink>
                     )
                 }
                 {
-                    useAuth.user &&
+                    useAuth?.user &&
                     (
                         (<CustomLink to="/weather_app/cities">My Cities</CustomLink>)
                     )
                 }
                 {
-                    useAuth.user &&
+                    useAuth?.user &&
                     (
                         <button tabIndex={0} onClick={() => { useAuth.logout() }}> Log out </button>
                     )

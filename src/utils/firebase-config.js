@@ -5,7 +5,6 @@ import "firebase/database";
 import firebase from 'firebase/compat/app';
 import { getDatabase } from "firebase/database";
 
-
 const firebaseConfig = {
     apiKey: apiKey,
     authDomain: "enterprise-programming-336c5.firebaseapp.com",
