@@ -5,23 +5,27 @@ export default function Home() {
     <React.Fragment>
       <div className="flex-row">
         <article className="cell">
-          <h2></h2>
+          <h3>Welcome!</h3>
           <p>
-            The HyperText Markup Language or HTML is the standard markup
-            language for documents designed to be displayed in a web browser. It
-            can be assisted by technologies such as Cascading Style Sheets and
-            scripting languages such as JavaScript.
+            Welcome to Weather_app. Your destination for all things
+            weather related. Use this website to get news about the
+            weather in all the cities you're intrested in. It's as
+            simple as creating an account and adding the cities to
+            your cities page. That's it! 
           </p>
         </article>
         <div className="cell space">
           <div className="filler"></div>
           <article>
-            <h2></h2>
+            <h3>Usage</h3>
             <p>
-              The HyperText Markup Language or HTML is the standard markup
-              language for documents designed to be displayed in a web browser.
-              It can be assisted by technologies such as Cascading Style Sheets
-              and scripting languages such as JavaScript.
+              After you login you'll get access to your "My Cities" page.
+              Go there and add cities to be monitored. The website will fetch
+              your data and then show you all the relevent inforamtion about
+              your selected cities. You'll also get a figure to show you the
+              temperature in all the cities you're monitoring, sorted by latitude.
+              This will help you see the temperature increase as you get closer to
+              the equator!
             </p>
           </article>
         </div>

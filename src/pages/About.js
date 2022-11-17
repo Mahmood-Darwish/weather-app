@@ -1,13 +1,10 @@
 export default function About() {
 
     return (
-        <article>
-            <h2></h2>
+        <article className="flex-column">
+            <h3 style={{ padding: 0, marginBottom: 0 }}>Acknowledgment</h3>
             <p>
-                The HyperText Markup Language or HTML is the standard markup
-                language for documents designed to be displayed in a web browser.
-                It can be assisted by technologies such as Cascading Style Sheets
-                and scripting languages such as JavaScript.
+                This website was made by Mahmood Darwish for the Enterprise Programming in JavaScript course.
             </p>
         </article>
     )

@@ -22,7 +22,15 @@ const requestCity = async function (cityToRequest) {
     return response.json();
 };
 
-export default function Cities() {
+export const capitalize = (str) => {
+    var splitStr = str.toLowerCase().split(' ');
+    for (var i = 0; i < splitStr.length; i++) {
+        splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
+    }
+    return splitStr.join(' ');
+}
+
+export function Cities() {
     const [cities, setCities] = useState([]);
     const useAuth = useContext(authContext);
     const [input, setInput] = useState('');
@@ -50,14 +58,6 @@ export default function Cities() {
             return 0;
         })
         return res
-    }
-
-    const capitalize = (str) => {
-        var splitStr = str.toLowerCase().split(' ');
-        for (var i = 0; i < splitStr.length; i++) {
-            splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);
-        }
-        return splitStr.join(' ');
     }
 
     const handleSubmission = async function (e) {
